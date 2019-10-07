@@ -83,16 +83,8 @@ jobs:
             bundle-install: true
             pod-install: true
       - run:
-          name: Install ImageMagick
-          working_directory: vendor
-          command: |
-            # Downloading macOS binary listed here: https://imagemagick.org/script/download.php
-            curl https://imagemagick.org/download/binaries/ImageMagick-x86_64-apple-darwin17.7.0.tar.gz | tar xvz
-
-            INSTALLED_PATH="$(pwd)/ImageMagick-7.0.8"
-            echo "export MAGICK_HOME=\"$INSTALLED_PATH\"" >> $BASH_ENV
-            echo "export PATH=\"$INSTALLED_PATH/bin:\$PATH\"" >> $BASH_ENV
-            echo "export DYLD_LIBRARY_PATH=\"$INSTALLED_PATH/lib\"" >> $BASH_ENV
+          name: Install ImageMagick & GhostScript
+          command: brew install imagemagick ghostscript
       - run:
           name: Copy Secrets
           command: bundle exec fastlane run configure_apply
