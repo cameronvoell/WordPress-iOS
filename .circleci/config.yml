@@ -84,7 +84,9 @@ jobs:
             pod-install: true
       - run:
           name: Install ImageMagick & GhostScript
-          command: brew install imagemagick ghostscript
+          command: HOMEBREW_NO_AUTO_UPDATE=1 brew install imagemagick ghostscript
+          # Install in the background as it isn't needed until the end of the build (which takes much longer than this step)
+          background: true
       - run:
           name: Copy Secrets
           command: bundle exec fastlane run configure_apply
@@ -97,14 +99,14 @@ workflows:
   wordpress_ios:
     jobs:
       - Installable Build
-      - Build Tests
-      - Unit Tests:
-          requires: [ "Build Tests" ]
-      - UI Tests:
-          name: UI Tests (iPhone 11)
-          device: iPhone 11
-          requires: [ "Build Tests" ]
-      - UI Tests:
-          name: UI Tests (iPad Air 3rd generation)
-          device: iPad Air \\(3rd generation\\)
-          requires: [ "Build Tests" ]
+      # - Build Tests
+      # - Unit Tests:
+      #     requires: [ "Build Tests" ]
+      # - UI Tests:
+      #     name: UI Tests (iPhone 11)
+      #     device: iPhone 11
+      #     requires: [ "Build Tests" ]
+      # - UI Tests:
+      #     name: UI Tests (iPad Air 3rd generation)
+      #     device: iPad Air \\(3rd generation\\)
+      #     requires: [ "Build Tests" ]
