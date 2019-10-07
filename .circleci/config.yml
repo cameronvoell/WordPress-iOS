@@ -72,10 +72,28 @@ jobs:
           command: test-without-building
           arguments: -xctestrun DerivedData/Build/Products/WordPressUITests_iphonesimulator13.0-x86_64.xctestrun -destination "platform=iOS Simulator,id=$SIMULATOR_UDID"
       - ios/save-xcodebuild-artifacts
+  Installable Build:
+    executor:
+      name: ios/default
+      xcode-version: "11.0.0"
+    steps:
+      - git/shallow-checkout
+      - load-chruby
+      - ios/install-dependencies:
+            bundle-install: true
+            pod-install: true
+      - run:
+          name: Copy Secrets
+          command: bundle exec fastlane run configure_apply
+      - run:
+          name: Build
+          working_directory: Scripts
+          command: bundle exec fastlane installable_build
 
 workflows:
   wordpress_ios:
     jobs:
+      - Installable Build
       - Build Tests
       - Unit Tests:
           requires: [ "Build Tests" ]

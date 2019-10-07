@@ -1,6 +1,13 @@
 default_platform(:ios)
 fastlane_require 'dotenv'
 
+before_all do
+  # This allows code signing to work on CircleCI
+  # It is skipped if this isn't running on CI
+  # See https://circleci.com/docs/2.0/ios-codesigning/
+  setup_circle_ci
+end
+
 platform :ios do
 ########################################################################
 # Environment
@@ -169,6 +176,22 @@ import "./ScreenshotFastfile"
     ios_build_preflight()
     build_and_upload_internal(skip_prechecks: true, skip_confirm: options[:skip_confirm])
     build_and_upload_itc(skip_prechecks: true, skip_confirm: options[:skip_confirm])
+  end
+
+  desc "Builds an installable build"
+  lane :installable_build do | options |
+    internal_code_signing
+
+    gym(
+      scheme: "WordPress Internal",
+      workspace: "../WordPress.xcworkspace",
+      export_method: "enterprise",
+      clean: true,
+      output_directory: "../build/",
+      derived_data_path: "../derived-data/internal/",
+      export_team_id: ENV["INT_EXPORT_TEAM_ID"],
+      export_options: { method: "enterprise" })
+   
   end
 
   #####################################################################################
