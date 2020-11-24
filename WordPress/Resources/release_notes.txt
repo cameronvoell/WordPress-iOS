@@ -1,5 +1,5 @@
-Block editor improvements:
-On Jetpack sites, you can now edit unsupported blocks by enabling Jetpack SSO from the missing block alert. Use the handy link picker to add URLs to posts. We’ve also increased the size of the tap target on the primary action on unsupported blocks.
+All About Jetpack: Access all of your Jetpack features quickly and easily, including your stats, activity log, and settings.
 
-Fixes:
-Zapped bugs that caused the page editor to become an invisible overlay and eliminated duplicate views generated when requesting a login link. In the Reader, tapping a link with an anchor now works as expected.
+Getting Help & Support: We fixed a few issues that occurred if you tried to contact our support team. When contacting us, you can now include non-alpha characters, and your app will no longer crash when entering your email address.
+
+Reader Updates: We also fixed a display issue in the Reader, and comments are no longer italicized by default.
