@@ -6,16 +6,19 @@ enum FeatureFlag: Int, CaseIterable, OverrideableFlag {
     case debugMenu
     case readerCSS
     case unifiedAuth
-    case newReaderNavigation
     case swiftCoreData
     case homepageSettings
     case gutenbergMentions
+    case gutenbergXposts
     case gutenbergModalLayoutPicker
     case whatIsNew
     case newNavBarAppearance
     case unifiedPrologueCarousel
     case stories
     case siteCreationHomePagePicker
+    case jetpackScan
+    case activityLogFilters
+    case unseenPostCount
 
     /// Returns a boolean indicating if the feature is enabled
     var enabled: Bool {
@@ -32,13 +35,13 @@ enum FeatureFlag: Int, CaseIterable, OverrideableFlag {
             return false
         case .unifiedAuth:
             return true
-        case .newReaderNavigation:
-            return true
         case .swiftCoreData:
             return BuildConfiguration.current == .localDeveloper
         case .homepageSettings:
             return true
         case .gutenbergMentions:
+            return true
+        case .gutenbergXposts:
             return true
         case .gutenbergModalLayoutPicker:
             return true
@@ -51,7 +54,13 @@ enum FeatureFlag: Int, CaseIterable, OverrideableFlag {
         case .stories:
             return BuildConfiguration.current ~= [.localDeveloper, .a8cBranchTest]
         case .siteCreationHomePagePicker:
-            return false
+            return true
+        case .jetpackScan:
+            return BuildConfiguration.current == .localDeveloper
+        case .activityLogFilters:
+            return BuildConfiguration.current == .localDeveloper
+        case .unseenPostCount:
+            return BuildConfiguration.current == .localDeveloper
         }
     }
 
@@ -88,14 +97,14 @@ extension FeatureFlag {
             return "Ignore Reader CSS Cache"
         case .unifiedAuth:
             return "Unified Auth"
-        case .newReaderNavigation:
-            return "New Reader Navigation"
         case .swiftCoreData:
             return "Migrate Core Data Stack to Swift"
         case .homepageSettings:
             return "Homepage Settings"
         case .gutenbergMentions:
             return "Mentions in Gutenberg"
+        case .gutenbergXposts:
+            return "Xposts in Gutenberg"
         case .gutenbergModalLayoutPicker:
             return "Gutenberg Modal Layout Picker"
         case .whatIsNew:
@@ -108,14 +117,18 @@ extension FeatureFlag {
             return "Stories"
         case .siteCreationHomePagePicker:
             return "Site Creation: Home Page Picker"
+        case .jetpackScan:
+            return "Jetpack Scan"
+        case .activityLogFilters:
+            return "Jetpack's Activity Log Filters"
+        case .unseenPostCount:
+            return "Unseen Posts Count in Reader"
         }
     }
 
     var canOverride: Bool {
         switch self {
         case .debugMenu:
-            return false
-        case .newReaderNavigation:
             return false
         case .swiftCoreData:
             return false

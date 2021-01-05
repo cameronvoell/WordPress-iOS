@@ -337,16 +337,16 @@ class GutenbergViewController: UIViewController, PostEditor {
         refreshInterface()
 
         gutenberg.delegate = self
-        showInformativeDialogIfNecessary()
         fetchEditorTheme()
         presentNewPageNoticeIfNeeded()
 
         service?.syncJetpackSettingsForBlog(post.blog, success: { [weak self] in
             self?.gutenberg.updateCapabilities()
-            print("---> Success syncing JETPACK: Enabled=\(self!.post.blog.settings!.jetpackSSOEnabled)")
         }, failure: { (error) in
-            print("---> ERROR syncking JETPACK")
+            DDLogError("Error syncing JETPACK: \(String(describing: error))")
         })
+
+        SiteSuggestionService.shared.prefetchSuggestions(for: self.post.blog)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -554,7 +554,7 @@ extension GutenbergViewController: GutenbergBridgeDelegate {
                                            post: post,
                                            multipleSelection: allowMultipleSelection,
                                            callback: callback)
-        case .filesApp:
+        case .otherApps, .allFiles:
             filesAppMediaPicker.presentPicker(origin: self, filters: filter, allowedTypesOnBlog: post.blog.allowedTypeIdentifiers, multipleSelection: allowMultipleSelection, callback: callback)
         default: break
         }
@@ -572,13 +572,12 @@ extension GutenbergViewController: GutenbergBridgeDelegate {
                 mediaType = mediaType | WPMediaType.audio.rawValue
             case .other:
                 mediaType = mediaType | WPMediaType.other.rawValue
+            case .any:
+                mediaType = mediaType | WPMediaType.all.rawValue
             }
         }
-        if mediaType == 0 {
-            return WPMediaType.all
-        } else {
-            return WPMediaType(rawValue: mediaType)
-        }
+
+        return WPMediaType(rawValue: mediaType)
     }
 
     func gutenbergDidRequestMediaFromSiteMediaLibrary(filter: WPMediaType, allowMultipleSelection: Bool, with callback: @escaping MediaPickerDidPickMediaCallback) {
@@ -855,6 +854,12 @@ extension GutenbergViewController: GutenbergBridgeDelegate {
         })
     }
 
+    func gutenbergDidRequestXpost(callback: @escaping (Swift.Result<String, NSError>) -> Void) {
+        DispatchQueue.main.async(execute: { [weak self] in
+            self?.showSuggestions(type: .xpost, callback: callback)
+        })
+    }
+
     func gutenbergDidRequestStarterPageTemplatesTooltipShown() -> Bool {
         return gutenbergSettings.starterPageTemplatesTooltipShown
     }
@@ -876,14 +881,16 @@ extension GutenbergViewController: GutenbergBridgeDelegate {
 extension GutenbergViewController {
 
     private func showSuggestions(type: SuggestionType, callback: @escaping (Swift.Result<String, NSError>) -> Void) {
-        guard let siteID = post.blog.dotComID, let blog = SuggestionService.shared.persistedBlog(for: siteID) else {
+        guard let siteID = post.blog.dotComID else {
             callback(.failure(GutenbergSuggestionsViewController.SuggestionError.notAvailable as NSError))
             return
         }
 
         switch type {
         case .mention:
-            guard SuggestionService.shared.shouldShowSuggestions(for: blog) else { return }
+            guard SuggestionService.shared.shouldShowSuggestions(for: post.blog) else { return }
+        case .xpost:
+            guard SiteSuggestionService.shared.shouldShowSuggestions(for: post.blog) else { return }
         }
 
         previousFirstResponder = view.findFirstResponder()
@@ -895,6 +902,26 @@ extension GutenbergViewController {
             if let previousFirstResponder = self.previousFirstResponder {
                 previousFirstResponder.becomeFirstResponder()
             }
+
+            var analyticsName: String
+            switch type {
+            case .mention:
+                analyticsName = "user"
+            case .xpost:
+                analyticsName = "xpost"
+            }
+
+            var didSelectSuggestion = false
+            if case .success(_) = result {
+                didSelectSuggestion = true
+            }
+
+            let analyticsProperties: [String: Any] = [
+                "suggestion_type": analyticsName,
+                "did_select_suggestion": didSelectSuggestion
+            ]
+
+            WPAnalytics.track(.gutenbergSuggestionSessionFinished, properties: analyticsProperties)
         }
         addChild(suggestionsController)
         view.addSubview(suggestionsController.view)
@@ -950,13 +977,15 @@ extension GutenbergViewController: GutenbergBridgeDataSource {
         return [
             post.blog.supports(.stockPhotos) ? .stockPhotos : nil,
             .tenor,
-            .filesApp,
+            .otherApps,
+            .allFiles,
         ].compactMap { $0 }
     }
 
     func gutenbergCapabilities() -> [Capabilities: Bool] {
         return [
-            .mentions: post.blog.isAccessibleThroughWPCom() && FeatureFlag.gutenbergMentions.enabled,
+            .mentions: FeatureFlag.gutenbergMentions.enabled && SuggestionService.shared.shouldShowSuggestions(for: post.blog),
+            .xposts: FeatureFlag.gutenbergXposts.enabled && SiteSuggestionService.shared.shouldShowSuggestions(for: post.blog),
             .unsupportedBlockEditor: isUnsupportedBlockEditorEnabled,
             .canEnableUnsupportedBlockEditor: post.blog.jetpack?.isConnected ?? false,
             .modalLayoutPicker: FeatureFlag.gutenbergModalLayoutPicker.enabled,
@@ -1067,7 +1096,8 @@ extension GutenbergViewController: PostEditorNavigationBarManagerDelegate {
 
 extension Gutenberg.MediaSource {
     static let stockPhotos = Gutenberg.MediaSource(id: "wpios-stock-photo-library", label: .freePhotosLibrary, types: [.image])
-    static let filesApp = Gutenberg.MediaSource(id: "wpios-files-app", label: .files, types: [.image, .video, .audio, .other])
+    static let otherApps = Gutenberg.MediaSource(id: "wpios-other-files", label: .otherApps, types: [.image, .video, .audio, .other])
+    static let allFiles = Gutenberg.MediaSource(id: "wpios-all-files", label: .allFiles, types: [.any])
     static let tenor = Gutenberg.MediaSource(id: "wpios-tenor", label: .tenor, types: [.image])
 }
 

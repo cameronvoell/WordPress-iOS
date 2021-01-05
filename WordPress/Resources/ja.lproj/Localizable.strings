@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-11-13 16:54:08+0000 */
+/* Translation-Revision-Date: 2020-12-10 14:54:10+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/3.0.0-alpha.2 */
 /* Language: ja_JP */
@@ -7,7 +7,7 @@
 "\nPlease send us an email to have your content cleared out." = "\nコンテンツを全て消去するには、メールを送信してください。";
 
 /* Message of Delete Site confirmation alert; substitution is site's host. */
-"\nTo confirm, please re-enter your site's address before deleting.\n\n" = "\n確認のため、消去するサイトのサイトアドレス(URL)を再度入力してください。\n";
+"\nTo confirm, please re-enter your site's address before deleting.\n\n" = "\n確認のため、消去の前にサイトのアドレス (URL) を再入力してください。\n\n";
 
 /* Title for the lazy load images setting */
 "\"Lazy-load\" images" = "画像の「遅延読み込み」";
@@ -243,9 +243,6 @@
 /* Indicates a video will be resized to Full HD 1920x1080 when uploaded. */
 "1080p" = "1080p";
 
-/* Site creation. Step 2. Screen title */
-"2 of 2" = "2\/2";
-
 /* Indicates a video will be resized to 640x480 when uploaded. */
 "480p" = "480p";
 
@@ -365,10 +362,16 @@
 "Activity" = "アクティビティ";
 
 /* Noun. Links to a blog's Activity screen. */
-"Activity Log" = "Activity Log";
+"Activity Log" = "アクティビティログ";
 
 /* Option in Support view to see activity logs. */
 "Activity Logs" = "アクティビティログ";
+
+/* Label for the Activity Type filter button */
+"Activity Type" = "Activity Type";
+
+/* Label for the Activity Type filter button when there are more than 1 activity type selected */
+"Activity Type (%1$d)" = "Activity Type (%1$d)";
 
 /* Remove asset from media picker list */
 "Add" = "追加";
@@ -415,8 +418,7 @@
 /* Add a profile photo to Me > My Profile */
 "Add a Profile Photo" = "プロファイル写真を追加";
 
-/* Title of a feature to add a new topic to the topics subscribed by the user.
-   Title. Lets the user know that they can use this feature to subscribe to new topics. */
+/* Title of a feature to add a new topic to the topics subscribed by the user. */
 "Add a Topic" = "トピックを追加";
 
 /* Hint for the reader CSS URL field */
@@ -712,7 +714,7 @@
 "Are you sure you want to remove %1$@?" = "%1$@ を削除してもよいですか ?";
 
 /* Message displayed in the Rewind Site alert, the placeholder holds a date, should match Calypso. */
-"Are you sure you want to rewind your site back to %@?\nThis will remove all content and options created or changed since then." = "%@までサイトの状態を巻き戻ししますか？\n巻き戻しをすると%@以降に加えられた変更や作成されたサイトコンテンツは全て削除されます。";
+"Are you sure you want to rewind your site back to %@?\nThis will remove all content and options created or changed since then." = "お使いのサイトを%@に巻き戻してもよいですか ?\nこの操作により、作成やしたすべてのコンテンツとオプション、および作成後に行ったすべての変更が削除されます。";
 
 /* Title of the message shown when the user taps Save as Draft while editing a post.  Options will be Save Now and Keep Editing. */
 "Are you sure you want to save as draft?" = "下書きとして保存してもよいですか ?";
@@ -731,9 +733,6 @@
 
 /* Title of message shown when user taps update. */
 "Are you sure you want to update?" = "更新してもよいですか ?";
-
-/* A short message asking the user if they wish to unfollow the specified topic. The %@ is a placeholder for the name of the topic. */
-"Are you sure you wish to remove the topic '%@'?" = "トピック「%@」を削除してもよろしいですか ?";
 
 /* Message shown to users who have an old publicize connection to a facebook profile. */
 "As of August 1, 2018, Facebook no longer allows direct sharing of posts to Facebook Profiles. Connections to Facebook Pages remain unchanged." = "2018年8月1日以降、Facebook では Facebook プロフィールへの投稿の直接共有ができなくなります。Facebook ページとの連携については変更ありません。";
@@ -948,6 +947,9 @@
 "By signing up, you agree to our _Terms of Service_." = "登録することで、利用規約に合意したことになります。";
 
 /* No comment provided by engineer. */
+"CHOOSE A FILE" = "ファイルを選択";
+
+/* No comment provided by engineer. */
 "CUSTOMIZE" = "カスタマイズ";
 
 /* Label for size of media while it's being calculated. */
@@ -991,6 +993,7 @@
    Cancel prompt for user information.
    Cancel registering a domain
    Cancel removing a plugin
+   Cancel site creation
    Cancel the crop
    Cancel updating User's Role
    Cancel. Action.
@@ -1006,7 +1009,6 @@
    Option to cancel the email app selection when logging in with magic links
    Text displayed by the left navigation button title
    The title of a cancel button.
-   Title of a cancel button.
    Verb. A button title.
    Verb. A button title. Tapping cancels an action.
    Verb. Button title. Tapping cancels an action.
@@ -1152,8 +1154,8 @@
 /* Title for the screen to pick a design and homepage for a site. */
 "Choose a design" = "デザインを選択";
 
-/* Create site, step 4. Select domain name. Title */
-"Choose a domain name for your site" = "サイトのドメイン名を選択してください";
+/* Select domain name. Title */
+"Choose a domain" = "ドメインを選択";
 
 /* Title of a Quick Start Tour */
 "Choose a theme" = "テーマを選択";
@@ -1161,11 +1163,14 @@
 /* Label for Publish time picker */
 "Choose a time" = "時間を選択";
 
-/* Shortened version of the main title to be used in back navigation */
-"Choose design" = "Choose design";
+/* Title to choose date range in a calendar */
+"Choose date range" = "Choose date range";
 
 /* Register domain - Title for the Choose domain button of Suggested domains screen */
 "Choose domain" = "ドメインを選択";
+
+/* No comment provided by engineer. */
+"Choose file" = "Choose file";
 
 /* Menu option for selecting media from the device's photo library. */
 "Choose from My Device" = "自分の端末から選択";
@@ -1173,7 +1178,7 @@
 /* Explanatory text for Homepage Settings homepage type selection. */
 "Choose from a homepage that displays your latest posts (classic blog) or a fixed \/ static page." = "最新の投稿を表示するホームページ (クラシックブログ) か固定ページから選択してください。";
 
-/* No comment provided by engineer. */
+/* Menu option used for adding media from other applications. */
 "Choose from device" = "デバイスから選択";
 
 /* No comment provided by engineer. */
@@ -1186,7 +1191,7 @@
 "Choose images" = "画像を選択";
 
 /* Shortened version of the main title to be used in back navigation */
-"Choose layout" = "Choose layout";
+"Choose layout" = "レイアウトを選択";
 
 /* No comment provided by engineer. */
 "Choose video" = "動画を選択";
@@ -1512,6 +1517,12 @@
 /* No comment provided by engineer. */
 "Copy block" = "ブロックをコピー";
 
+/* No comment provided by engineer. */
+"Copy file URL" = "ファイルの URL をコピー";
+
+/* Button title displayed in popup indicating the user copied the local copy */
+"Copy the version from this app" = "Copy the version from this app";
+
 /* This is one of the buttons we display inside of the prompt to review the app */
 "Could Be Better" = "不満がある";
 
@@ -1539,6 +1550,9 @@
 /* Title of a prompt. */
 "Could not save post for later" = "投稿をブックマークできませんでした";
 
+/* The app failed to subscribe to the comments for the post */
+"Could not subscribe to comments" = "Could not subscribe to comments";
+
 /* An error description explaining that Follow could not be toggled due to a missing blogURL attribute. */
 "Could not toggle Follow: missing blogURL attribute" = "フォローを切り替えられませんでした: blogURL 属性がありません";
 
@@ -1547,6 +1561,9 @@
 
 /* Error message informing the user that there was a problem unsubscribing to a site or feed. */
 "Could not unfollow the site at the address specified." = "指定されたアドレスのサイトをフォロー解除できませんでした。";
+
+/* The app failed to unsubscribe from the comments for the post */
+"Could not unsubscribe from comments" = "Could not unsubscribe from comments";
 
 /* This is the text we display to the user when we ask them for a review and they've indicated they don't like the app */
 "Could you tell us how we could improve?" = "改善方法についてご意見いただけますか ?";
@@ -1657,9 +1674,6 @@
 /* Title of a Quick Start Tour */
 "Create your site" = "サイトを作成";
 
-/* Accessibility hint for the Create Site button in Site Creation. */
-"Creates a new site with the given information." = "既存の情報を使用して、新規サイトを作成します。";
-
 /* Accessibility hint for create floating action button */
 "Creates new post, or page" = "新しい投稿またはページを作成します";
 
@@ -1735,6 +1749,9 @@
 /* Blog Writing Settings: Date Format
    Writing Date Format Settings Title */
 "Date Format" = "日付のフォーマット";
+
+/* Label of a button that displays a calendar */
+"Date Range" = "Date Range";
 
 /* Date and Time */
 "Date and Time" = "日付と時刻";
@@ -1821,12 +1838,15 @@
 "Deleting..." = "削除しています…";
 
 /* Verb. Denies a 2fa authentication challenge. */
-"Deny" = "Deny";
+"Deny" = "非承認";
 
 /* Label for the description for a media asset (image / video)
    Section header for tag name in Tag Details View.
    Title of section that contains plugins' description */
 "Description" = "説明";
+
+/* Shortened version of the main title to be used in back navigation */
+"Design" = "デザイン";
 
 /* Title for the desktop web preview */
 "Desktop" = "デスクトップ";
@@ -2027,6 +2047,9 @@
    Title of the drafts header in search list. */
 "Drafts" = "下書き";
 
+/* Label for post duplicate option. Tapping displays statistics for a post. */
+"Duplicate" = "Duplicate";
+
 /* No comment provided by engineer. */
 "Duplicate block" = "ブロックを複製";
 
@@ -2068,11 +2091,17 @@
    Opens the editor to edit an existing post. */
 "Edit Post" = "投稿の編集";
 
+/* No comment provided by engineer. */
+"Edit file" = "ファイルを編集";
+
 /* Explanation for the option to enable the block editor */
 "Edit new posts and pages with the block editor." = "ブロックエディターで新しい投稿やページを編集します。";
 
 /* Title for the edit sharing buttons section */
 "Edit sharing buttons" = "共有ボタンを編集";
+
+/* Button title displayed in popup indicating that the user edits the post first */
+"Edit the post first" = "Edit the post first";
 
 /* No comment provided by engineer. */
 "Edit using web editor" = "Web エディターを使って編集";
@@ -2155,6 +2184,9 @@
 /* Title of a row displayed on the debug screen used to display a screen that shows a list of encrypted logs */
 "Encrypted Logs" = "暗号化されたログ";
 
+/* Placeholder for the end date in calendar range selection */
+"End Date" = "End Date";
+
 /* Accessibility Label for the enter full screen button on the comment reply text view */
 "Enter Full Screen" = "フルスクリーン表示";
 
@@ -2193,12 +2225,12 @@
 /* Instruction text on the initial email address entry screen. */
 "Enter your email address to log in or create a WordPress.com account." = "メールアドレスを入力してログインするか、WordPress.com アカウントを作成します。";
 
+/* Button title. Takes the user to the login by site address flow. */
+"Enter your existing site address" = "Enter your existing site address";
+
 /* Title of a button on the magic link screen.
    Title of a button. */
 "Enter your password instead." = "代わりにパスワードを入力することもできます。";
-
-/* Button title. Takes the user to the login by site address flow. */
-"Enter your site address" = "サイトアドレスを入力";
 
 /* Generic error alert title
    Generic error.
@@ -2366,13 +2398,13 @@
 "Failed to insert media.\nPlease tap for options." = "メディアの挿入に失敗しました。\nオプションを選択するにはタップしてください。";
 
 /* No comment provided by engineer. */
-"Failed to save files.\nPlease tap for options." = "Failed to save files.\nPlease tap for options.";
+"Failed to save files.\nPlease tap for options." = "ファイルの保存に失敗しました。\nタップすると、オプションが表示されます。";
 
 /* Error message to show when wrong URL format is used to access the REST API */
 "Failed to serialize request to the REST API." = "REST API へのリクエストをシリアライズできませんでした。";
 
 /* No comment provided by engineer. */
-"Failed to upload files.\nPlease tap for options." = "Failed to upload files.\nPlease tap for options.";
+"Failed to upload files.\nPlease tap for options." = "ファイルのアップロードに失敗しました。\nタップすると、オプションが表示されます。";
 
 /* Option to select the Fastmail app when logging in with magic links */
 "Fastmail" = "Fastmail";
@@ -2422,6 +2454,9 @@
 /* Period Stats 'File Downloads' header */
 "File Downloads" = "ファイルのダウンロード";
 
+/* No comment provided by engineer. */
+"File block settings" = "ファイルブロック設定";
+
 /* Label for the file name for a media asset (image / video) */
 "File name" = "ファイル名";
 
@@ -2433,6 +2468,9 @@
 
 /* Title of the filter button in the Reader */
 "Filter" = "フィルター";
+
+/* Title of a screen that shows activity types so the user can filter using them (eg.: posts, images, users) */
+"Filter by activity type" = "Filter by activity type";
 
 /* Title for the find out more button in the What's New page. */
 "Find out more" = "さらに詳しく";
@@ -2635,9 +2673,6 @@ translators: sample content for \"Team\" page template */
 /* This is the text we display to the user after they've indicated they like the app */
 "Great!\n We love to hear from happy users \n😁" = "よかったです !\nユーザーの皆さんに喜んでもらえるのが何よりです。\n😁";
 
-/* This is the text we display to the user when we ask them for a review and they've indicated they like the app */
-"Great! Could you leave us a nice review?\n\nIt really helps." = "ありがとうございます。良い評価をつけていただけませんか ?\n\nとても助かります。";
-
 /* Name of the Quick Start list that guides users through a few tasks to customize their new website.
    Title of the Quick Start Checklist that guides users through a few tasks to grow the audience of their new website. */
 "Grow Your Audience" = "訪問者を増やす";
@@ -2807,8 +2842,8 @@ translators: sample content for \"Team\" page template */
 /* First line of remove viewer warning in confirmation dialog. */
 "If you remove this viewer, he or she will not be able to visit this site." = "この読者を削除すると、この読者はこのサイトにアクセスできなくなります。";
 
-/* Detail for instructions on Start Over settings page */
-"If you want a site but don't want any of the posts and pages you have now, our support team can delete your posts, pages, media, and comments for you.\n\nThis will keep your site and URL active, but give you a fresh start on your content creation. Just cont" = "サイトは保持したいものの、既存の投稿や固定ページが必要なくなった場合はサポートにお問い合わせください。投稿、固定ページ、メディアファイル、コメントを削除させていただきます。\n\nこうするとサイトと URL は有効なままで、コンテンツをまた最初から作成し始められます。サポートに連絡し、コンテンツの削除を依頼するだけです。";
+/* Detailed instructions on Start Over settings page. This is the first paragraph. */
+"If you want a site but do not want any of the posts and pages you have now, our support team can delete your posts, pages, media, and comments for you." = "サイトは維持したままで現在の投稿やページを削除する場合は、サポートチームが投稿、ページ、メディア、コメントをすべて削除するお手伝いをさせていただきます。";
 
 /* Paragraph 2 of 2 of main text body for the delete screen. */
 "If you're unsure about what will be deleted or need any help, not to worry, our support team is here to answer any questions you may have." = "何が削除されるのかよく分からない場合、または何か手助けが必要な場合もご心配なく。サポートスタッフがどんな質問にでもお答えします。";
@@ -2888,9 +2923,6 @@ translators: sample content for \"Team\" page template */
 
 /* Accessibility label for insert media button on formatting toolbar. */
 "Insert media" = "メディアを挿入";
-
-/* No comment provided by engineer. */
-"Insert mention" = "メンションを挿入";
 
 /* Default accessibility label for the media picker insert button. */
 "Insert selected" = "選択済みを挿入";
@@ -3146,9 +3178,6 @@ translators: sample content for \"Services\" page template */
 /* The accessibility label for the list style button in the Post List. */
 "List style" = "リストスタイル";
 
-/* Section title of the lists reader section. */
-"Lists" = "リスト";
-
 /* Title of the screen that load selected the revisions. */
 "Load" = "読み込む";
 
@@ -3255,7 +3284,7 @@ translators: sample content for \"Services\" page template */
 "Log in to your WordPress.com account with your email address." = "メールアドレスで WordPress.com アカウントにログインします。";
 
 /* Instructions on the WordPress.com username / password log in form. */
-"Log in with your WordPress.com username and password." = "Log in with your WordPress.com username and password.";
+"Log in with your WordPress.com username and password." = "WordPress.com のユーザー名とパスワードでログインしてください。";
 
 /* LogOut confirmation text, whenever there are no local changes */
 "Log out of WordPress?" = "WordPress からログアウトしますか ?";
@@ -3283,8 +3312,6 @@ translators: sample content for \"Services\" page template */
 "Main Navigation" = "メインナビゲーション";
 
 /* Button leading to a screen where users can manage their installed plugins
-   Button title. Tapping lets the user manage the sites they follow.
-   Manage
    Page title for the screen to manage your list of followed sites.
    Screen title, where users can see all their installed plugins.
    Title for the Reader Manage screen.
@@ -3588,7 +3615,7 @@ translators: sample content for \"Services\" page template */
 "New item" = "新規項目";
 
 /* Placeholder text for password field */
-"New password" = "New password";
+"New password" = "新規パスワード";
 
 /* Noun. The title of an item in a list. */
 "New posts" = "新規投稿";
@@ -3650,6 +3677,12 @@ translators: sample content for \"Services\" page template */
 
 /* Label used for posts without a title in spotlight search. */
 "No Title" = "無題";
+
+/* Title for the view when there aren't any Activities Types to display in the Activity Log Types picker */
+"No activities available" = "No activities available";
+
+/* Text display in the view when there aren't any Activities Types to display in the Activity Log Types picker */
+"No activities recorded in the selected date range." = "No activities recorded in the selected date range.";
 
 /* Title for the view when there aren't any Activities to display in the Activity Log */
 "No activity yet" = "アクティビティはまだありません";
@@ -3719,6 +3752,9 @@ translators: sample content for \"Services\" page template */
 
 /* Displayed in the Notifications Tab as a title, when the Likes Filter shows no notifications */
 "No likes yet" = "新しい「いいね」はまだついていません";
+
+/* Title for the view when there aren't any Activities to display in the Activity Log for a given filter. */
+"No matching events found." = "No matching events found.";
 
 /* Message displayed when no results are returned from a media library search. Should match Calypso.
    Phrase to show when the user search for images but there are no result to show.
@@ -4046,7 +4082,7 @@ translators: sample content for \"Services\" page template */
 
 /* Name of the button to open the page settings
    The title of the Page Settings screen. */
-"Page Settings" = "Page Settings";
+"Page Settings" = "ページ設定";
 
 /* translators: accessibility text. %s: Page break text. */
 "Page break block. %s" = "改ページブロック。%s";
@@ -4156,7 +4192,7 @@ translators: sample content for \"Services\" page template */
 "Pick username" = "ユーザー名を選択";
 
 /* Prompt for the screen to pick a design and homepage for a site. */
-"Pick your favorite homepage layout. You can customize or change it later" = "お気に入りのホームページのレイアウトを選択します。 後でカスタマイズまたは変更できます。";
+"Pick your favorite homepage layout. You can edit and customize it later." = "お気に入りのホームページのレイアウトを選択します。 後で編集およびカスタマイズできます。";
 
 /* The item to select during a guided tour. */
 "Plan" = "プラン";
@@ -4362,6 +4398,9 @@ translators: sample content for \"Services\" page template */
 /* Title of notification displayed when a post has been successfully scheduled. */
 "Post scheduled" = "投稿を予約しました";
 
+/* Title displayed in popup when user tries to copy a post with unsaved changes */
+"Post sync conflict" = "Post sync conflict";
+
 /* translators: accessibility text. %s: text content of the post title. */
 "Post title. %s" = "投稿タイトル。%s";
 
@@ -4424,7 +4463,9 @@ translators: sample content for \"Services\" page template */
 
 /* Displays the Post Preview Interface
    Section title for related posts section preview
+   Title for button to preview a selected homepage design
    Title for button to preview a selected layout
+   Title for screen to preview a selected homepage design
    Title for screen to preview a static content. */
 "Preview" = "プレビュー";
 
@@ -4605,8 +4646,7 @@ translators: sample content for \"Services\" page template */
 /* Displayed at the footer of a Pingback Notification. */
 "Read the source post" = "元の投稿を読む";
 
-/* Noun. Title of the Reader feature in the app.
-   The accessibility value of the Reader tab.
+/* The accessibility value of the Reader tab.
    The accessibility value of the reader tab.
    The default title of the Reader
    The menu item to select during a guided tour.
@@ -4694,15 +4734,12 @@ translators: sample content for \"Services\" page template */
    Button label when removing a blog
    Label for remove location button
    Label for the Remove Feature Image icon. Tapping will show a confirmation screen for removing the feature image from the post.
-   Label of the table view cell's delete button, when unfollowing tags.
    Remove Action
    Remove an image/posts/etc
    Removes a self hosted site from the app
    Title for button that will confirm removing the next steps/quick start menus.
-   Title of a prompt asking the user to confirm they no longer wish to subscribe to a certain tag.
    User action to remove featured media.
-   User action to remove media.
-   Verb. Button title. Unfollows / unsubscribes the user from a topic in the reader. */
+   User action to remove media. */
 "Remove" = "削除";
 
 /* Remove Person Alert Title
@@ -4956,11 +4993,6 @@ translators: sample content for \"Services\" page template */
 /* Accessibility label for the 'Save Post' button when a post has been saved. */
 "Saved Post" = "保存済みの投稿";
 
-/* Section title for Saved Posts in Reader
-   Title for list of posts saved for later
-   Title of the reader's Saved Posts menu item. */
-"Saved Posts" = "保存された投稿";
-
 /* Text displayed in HUD when a media item's metadata (title, etc) is saved successfully. */
 "Saved!" = "保存しました。";
 
@@ -4977,6 +5009,9 @@ translators: sample content for \"Services\" page template */
    Text displayed in HUD while a media item's metadata (title, etc) is being saved.
    Text displayed in HUD while a post is being saved as a draft. */
 "Saving..." = "保存中...";
+
+/* Noun. Links to a blog's Jetpack Scan screen. */
+"Scan" = "Scan";
 
 /* Schedule button, this is what the Publish button changes to in the Post Editor if the post has been scheduled for posting later. */
 "Schedule" = "投稿予約";
@@ -5005,10 +5040,8 @@ translators: sample content for \"Services\" page template */
 "Scrollable block menu opened. Select a block." = "スクロール可能なブロックメニューが開きました。 ブロックを選択します。";
 
 /* Placeholder text for the search bar
-   Search
    The menu item to select during a guided tour.
-   Title of the Reader's search feature
-   Title of the reader's Search menu item. */
+   Title of the Reader's search feature */
 "Search" = "検索";
 
 /* Site creation. Seelect a domain, search field placeholder */
@@ -5069,10 +5102,7 @@ translators: sample content for \"Services\" page template */
 "Select %@ to continue" = "%@ を選択して続ける";
 
 /* A step in a guided tour for quick start. %@ will be the name of the item to select. */
-"Select %@ to continue." = "%@ を選択して続ける。";
-
-/* A step in a guided tour for quick start. %@ will be the name of the item to select. */
-"Select %@ to create a new page." = "%@ を選択して新しいページを作成する。";
+"Select %@ to create a new page" = "Select %@ to create a new page";
 
 /* A step in a guided tour for quick start. %@ will be the name of the item to select. */
 "Select %@ to create a new post" = "%@ を選択して新しい投稿を作成する";
@@ -5402,7 +5432,6 @@ translators: sample content for \"Services\" page template */
 "Site Language" = "サイトの言語";
 
 /* Noun. Title. Links to the blog's Pages screen.
-   The item to select during a guided tour.
    Title of the screen showing the list of pages for a blog. */
 "Site Pages" = "サイトのページ";
 
@@ -5410,7 +5439,7 @@ translators: sample content for \"Services\" page template */
 "Site Redirect" = "サイト転送";
 
 /* Noun. Title. Links to the blog's Settings screen. */
-"Site Settings" = "Site Settings";
+"Site Settings" = "サイト設定";
 
 /* Default title for a site
    Label for site title blog setting
@@ -5583,6 +5612,9 @@ translators: sample content for \"Services\" page template */
 /* Standard post format label */
 "Standard" = "標準";
 
+/* Placeholder for the start date in calendar range selection */
+"Start Date" = "Start Date";
+
 /* Label for selecting the Start Over Settings item
    Title of Start Over settings page */
 "Start Over" = "最初からやり直す";
@@ -5641,9 +5673,6 @@ translators: sample content for \"Services\" page template */
 
 /* Title of alert announcing new Create Button feature. */
 "Streamlined navigation" = "ナビゲーションの効率化";
-
-/* Section title of the default reader items. */
-"Streams" = "ストリーム";
 
 /* Accessibility label for strikethrough button on formatting toolbar. */
 "Strike Through" = "取り消し線";
@@ -5759,7 +5788,6 @@ translators: sample content for \"Services\" page template */
    Label for Tags
    Label for the tags field. Should be the same as WP core.
    Label for the Tags Section in the Blog Settings
-   Section title of the tags reader section.
    Tags menu item in share extension.
    Title for the tag selector view */
 "Tags" = "タグ";
@@ -5827,18 +5855,11 @@ translators: sample content for \"Services\" page template */
 /* Accessibility hint to inform the user what action the post tag chip performs */
 "Tap to view posts for this tag" = "タップしてこのフラグが付いた投稿を表示";
 
-/* Accessibility hint
-   Tapping lets you manage the sites you follow. */
-"Tapping lets you manage the sites you follow." = "タップして、フォロー中のサイトを管理できます。";
-
 /* Label for the Taxonomy area (categories, keywords, ...) in post settings. */
 "Taxonomy" = "投稿カテゴリー・タグ";
 
 /* translators: title for \"Team\" page template */
 "Team" = "チーム";
-
-/* Section title of the teams reader section. */
-"Teams" = "チーム";
 
 /* My Profile 'About me' hint text */
 "Tell us a bit about you." = "ご自身についてお知らせください。";
@@ -5947,6 +5968,9 @@ translators: sample content for \"Services\" page template */
 /* Text above the selection of the number of posts to show per blog page */
 "The number of posts to show per page." = "1ページに表示する投稿の数。";
 
+/* Message displayed in popup when user tries to copy a post with conflicts */
+"The post you are trying to copy has two versions that are in conflict or you recently made changes but didn't save them.\nEdit the post first to resolve any conflict or proceed with copying the version from this app." = "The post you are trying to copy has two versions that are in conflict or you recently made changes but didn't save them.\nEdit the post first to resolve any conflict or proceed with copying the version from this app.";
+
 /* Description shown in alert to confirm skipping all quick start items */
 "The quick start tour will guide you through building a basic site. Are you sure you want to skip? " = "クイックスタートツアーでは、ベーシックサイトの作成方法を説明します。スキップしてもよいですか ?";
 
@@ -6020,12 +6044,6 @@ translators: sample content for \"Services\" page template */
 
 /* Reply Failure Message */
 "There has been an unexpected error while sending your reply" = "返信を送信する際に予期しないエラーが発生しました";
-
-/* The app failed to subscribe to the comments for the post */
-"There has been an unexpected error while subscribing to the comments" = "コメントの購読を登録している間に予期しないエラーが発生しました。";
-
-/* The app failed to unsubscribe from the comments for the post */
-"There has been an unexpected error while unsubscribing from the comments" = "コメントの購読を解除している間に予期しないエラーが発生しました。";
 
 /* Displayed after a failed Notification Settings call */
 "There has been an unexpected error while updating your Notification Settings" = "通知設定を更新する際に予期しないエラーが発生しました";
@@ -6145,8 +6163,8 @@ translators: sample content for \"Services\" page template */
 /* translators: sample content for \"About\" page template */
 "This is sample content, included with the template to illustrate its features. Remove or replace it with your own words and media." = "これは各種機能を具体的に紹介するテンプレートに含まれるサンプルコンテンツ例です。削除するか、お客様自身の文章とメディアに置き換えてください。";
 
-/* Create site, step 4. Select domain name. Subtitle */
-"This is where people will find you on the internet" = "ドメインとは、インターネット上で閲覧者があなたを見つける場所です";
+/* Select domain name. Subtitle */
+"This is where people will find you on the internet." = "This is where people will find you on the internet.";
 
 /* Message displayed in Media Library if the user attempts to edit a media asset (image / video) after it has been deleted. */
 "This media item has been deleted." = "このメディアファイルは削除されています。";
@@ -6175,6 +6193,9 @@ translators: sample content for \"Services\" page template */
 
 /* Warning when confirming to remove a plugin that's inactive */
 "This will delete all associated files and data." = "この操作により、関連するすべてのファイルとデータが削除されます。";
+
+/* Detailed instructions on Start Over settings page. This is the second paragraph. */
+"This will keep your site and URL active, but give you a fresh start on your content creation. Just contact us to have your current content cleared out." = "こうすることで、サイトと URL を保ったまま新しいコンテンツを一から作り始めることができます。 サポートに連絡し、現在のコンテンツをすべて削除したい旨をお知らせください。";
 
 /* Discussion Settings Title
    Settings: Comments Threading preferences */
@@ -6313,7 +6334,8 @@ translators: sample content for \"Services\" page template */
 /* No comment provided by engineer. */
 "Translate" = "翻訳";
 
-/* Trashes a comment
+/* Accessibility label for trash buttons in nav bars
+   Trashes a comment
    Trashes the comment */
 "Trash" = "ゴミ箱";
 
@@ -6340,7 +6362,11 @@ translators: sample content for \"Services\" page template */
 /* No comment provided by engineer. */
 "Try a starter layout" = "初心者用レイアウトを試す";
 
-/* Button that lets users try to reload the plugin directory after loading failure
+/* Text display when the view when there aren't any Activities to display in the Activity Log for a given filter. */
+"Try adjusting your date range or activity type filters" = "Try adjusting your date range or activity type filters";
+
+/* Button label for trying to retrieve the activities type again
+   Button that lets users try to reload the plugin directory after loading failure
    Re-load the history again. It appears if the loading call fails.
    Share extension error dialog retry button label. */
 "Try again" = "もう一度お試しください";
@@ -7564,8 +7590,7 @@ translators: sample content for \"Services\" page template */
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Notifications' tab. */
 "wordpress, notifications, alerts, updates" = "wordpress, 通知, アラート, 更新";
 
-/* This is a comma separated list of keywords used for spotlight indexing of the 'Reader' tab.
-   This is a comma-separated list of keywords used for spotlight indexing of the 'Reader' tab. */
+/* This is a comma-separated list of keywords used for spotlight indexing of the 'Reader' tab. */
 "wordpress, reader, articles, posts, blog post, followed, discover, likes, my likes, tags, topics" = "wordpress, 読者, 記事, 投稿, ブログ投稿, フォロー中, 発見, いいね, お気に入り, タグ, トピック";
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'My Sites' tab. */
