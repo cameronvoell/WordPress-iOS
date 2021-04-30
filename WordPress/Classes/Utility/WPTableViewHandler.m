@@ -334,15 +334,6 @@ static CGFloat const DefaultCellHeight = 44.0;
     return UITableViewCellEditingStyleNone;
 }
 
-- (NSArray *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if ([self.delegate respondsToSelector:@selector(tableView:editActionsForRowAtIndexPath:)]) {
-        return [self.delegate tableView:tableView editActionsForRowAtIndexPath:indexPath];
-    }
-    
-    return nil;
-}
-
 - (UISwipeActionsConfiguration *)tableView:(UITableView *)tableView leadingSwipeActionsConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if ([self.delegate respondsToSelector:@selector(tableView:leadingSwipeActionsConfigurationForRowAtIndexPath:)]) {
@@ -662,6 +653,12 @@ static CGFloat const DefaultCellHeight = 44.0;
     // Prevent crashes in iOS 14 if the row is negative
     // See http://git.io/JIKIB
     if (indexPath.row < 0 || newIndexPath.row < 0) {
+        return;
+    }
+
+    // Prevents a crash where index path rows could end with an integer overflow error.
+    // See https://github.com/wordpress-mobile/WordPress-iOS/issues/15366
+    if (indexPath.row == NSUIntegerMax || newIndexPath.row == NSUIntegerMax) {
         return;
     }
 

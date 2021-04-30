@@ -4,6 +4,8 @@ import WordPressShared.WPTableViewCell
 
 open class ActivityTableViewCell: WPTableViewCell {
 
+    var actionButtonHandler: ((UIButton) -> Void)?
+
     // MARK: - Overwritten Methods
 
     open override func awakeFromNib() {
@@ -11,8 +13,7 @@ open class ActivityTableViewCell: WPTableViewCell {
         assert(iconBackgroundImageView != nil)
         assert(contentLabel != nil)
         assert(summaryLabel != nil)
-        assert(rewindIcon != nil)
-        rewindIcon.image = rewindGridicon
+        assert(actionButton != nil)
     }
 
     // MARK: - Public Methods
@@ -38,8 +39,14 @@ open class ActivityTableViewCell: WPTableViewCell {
         }
 
         contentView.backgroundColor = Style.backgroundColor()
-        rewindIconContainer.isHidden  = !activity.isRewindable
+        actionButtonContainer.isHidden  = !activity.isRewindable
 
+        actionButton.setImage(actionGridicon, for: .normal)
+        actionButton.tintColor = .listIcon
+    }
+
+    @IBAction func didTapActionButton(_ sender: UIButton) {
+        actionButtonHandler?(sender)
     }
 
     typealias Style = WPStyleGuide.ActivityStyleGuide
@@ -47,7 +54,9 @@ open class ActivityTableViewCell: WPTableViewCell {
     // MARK: - Private Properties
 
     fileprivate var activity: Activity?
-    fileprivate var rewindGridicon = UIImage.gridicon(.history)
+    fileprivate var actionGridicon: UIImage {
+        return UIImage.gridicon(.ellipsis)
+    }
 
     // MARK: - IBOutlets
 
@@ -55,8 +64,8 @@ open class ActivityTableViewCell: WPTableViewCell {
     @IBOutlet fileprivate var iconImageView: UIImageView!
     @IBOutlet fileprivate var contentLabel: UILabel!
     @IBOutlet fileprivate var summaryLabel: UILabel!
-    @IBOutlet fileprivate var rewindIconContainer: UIView!
-    @IBOutlet fileprivate var rewindIcon: UIImageView!
+    @IBOutlet fileprivate var actionButtonContainer: UIView!
+    @IBOutlet fileprivate var actionButton: UIButton!
 }
 
 open class RewindStatusTableViewCell: ActivityTableViewCell {
@@ -80,8 +89,10 @@ open class RewindStatusTableViewCell: ActivityTableViewCell {
         iconBackgroundImageView.backgroundColor = .primary
         iconImageView.image = UIImage.gridicon(.noticeOutline).imageWithTintColor(.white)
         iconImageView.isHidden = false
-        rewindIconContainer.isHidden = true
+        actionButtonContainer.isHidden = true
 
+        progressView.progressTintColor = .primary
+        progressView.trackTintColor = UIColor(light: (.primary(.shade5)), dark: (.primary(.shade80)))
         progressView.setProgress(progress, animated: true)
     }
 }

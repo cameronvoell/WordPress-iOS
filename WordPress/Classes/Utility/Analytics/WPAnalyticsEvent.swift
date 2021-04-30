@@ -4,6 +4,7 @@ import Foundation
 @objc enum WPAnalyticsEvent: Int {
 
     case createSheetShown
+    case createSheetActionTapped
     case createAnnouncementModalShown
 
     // Media Editor
@@ -20,7 +21,9 @@ import Foundation
 
     // Settings and Prepublishing Nudges
     case editorPostPublishTap
+    case editorPostPublishDismissed
     case editorPostScheduledChanged
+    case editorPostTitleChanged
     case editorPostVisibilityChanged
     case editorPostTagsChanged
     case editorPostPublishNowTapped
@@ -78,28 +81,63 @@ import Foundation
     case readerSuggestedSiteVisited
     case readerSuggestedSiteToggleFollow
     case readerDiscoverContentPresented
+    case readerPostMarkSeen
+    case readerPostMarkUnseen
+    case readerRelatedPostFromOtherSiteClicked
+    case readerRelatedPostFromSameSiteClicked
 
     // What's New - Feature announcements
     case featureAnnouncementShown
     case featureAnnouncementButtonTapped
+
     // Stories
     case storyIntroShown
     case storyIntroDismissed
     case storyIntroCreateStoryButtonTapped
+    case storyAddedMedia
+    case storyBlockAddMediaTapped
 
     // Jetpack
     case jetpackSettingsViewed
     case jetpackManageConnectionViewed
     case jetpackDisconnectTapped
     case jetpackDisconnectRequested
-    case jetpackWhitelistedIpsViewed
-    case jetpackWhitelistedIpsChanged
+    case jetpackAllowlistedIpsViewed
+    case jetpackAllowlistedIpsChanged
     case activitylogFilterbarSelectType
     case activitylogFilterbarResetType
     case activitylogFilterbarTypeButtonTapped
     case activitylogFilterbarRangeButtonTapped
     case activitylogFilterbarSelectRange
     case activitylogFilterbarResetRange
+    case backupListOpened
+    case backupFilterbarRangeButtonTapped
+    case backupFilterbarSelectRange
+    case backupFilterbarResetRange
+    case restoreOpened
+    case restoreConfirmed
+    case restoreError
+    case restoreNotifiyMeButtonTapped
+    case backupDownloadOpened
+    case backupDownloadConfirmed
+    case backupFileDownloadError
+    case backupNotifiyMeButtonTapped
+    case backupFileDownloadTapped
+    case backupDownloadShareLinkTapped
+
+    // Jetpack Scan
+    case jetpackScanAccessed
+    case jetpackScanHistoryAccessed
+    case jetpackScanHistoryFilter
+    case jetpackScanThreatListItemTapped
+    case jetpackScanRunTapped
+    case jetpackScanIgnoreThreatDialogOpen
+    case jetpackScanThreatIgnoreTapped
+    case jetpackScanFixThreatDialogOpen
+    case jetpackScanThreatFixTapped
+    case jetpackScanAllThreatsOpen
+    case jetpackScanAllthreatsFixTapped
+    case jetpackScanError
 
     // Comments
     case commentViewed
@@ -112,12 +150,29 @@ import Foundation
     case commentEditorOpened
     case commentEdited
     case commentRepliedTo
+    case commentFilterChanged
+
+    // InviteLinks
+    case inviteLinksGetStatus
+    case inviteLinksGenerate
+    case inviteLinksShare
+    case inviteLinksDisable
+
+    // Page Layout and Site Design Picker
+    case categoryFilterSelected
+    case categoryFilterDeselected
+
+    // User Profile Sheet
+    case userProfileSheetShown
+    case userProfileSheetSiteShown
 
     /// A String that represents the event
     var value: String {
         switch self {
         case .createSheetShown:
             return "create_sheet_shown"
+        case .createSheetActionTapped:
+            return "create_sheet_action_tapped"
         case .createAnnouncementModalShown:
             return "create_announcement_modal_shown"
         // Media Editor
@@ -141,8 +196,12 @@ import Foundation
         // Editor    
         case .editorPostPublishTap:
             return "editor_post_publish_tapped"
+        case .editorPostPublishDismissed:
+            return "editor_post_publish_dismissed"
         case .editorPostScheduledChanged:
             return "editor_post_scheduled_changed"
+        case .editorPostTitleChanged:
+            return "editor_post_title_changed"
         case .editorPostVisibilityChanged:
             return "editor_post_visibility_changed"
         case .editorPostTagsChanged:
@@ -243,11 +302,21 @@ import Foundation
             return "reader_suggested_site_toggle_follow"
         case .readerDiscoverContentPresented:
             return "reader_discover_content_presented"
+        case .readerPostMarkSeen:
+            return "reader_mark_as_seen"
+        case .readerPostMarkUnseen:
+            return "reader_mark_as_unseen"
+        case .readerRelatedPostFromOtherSiteClicked:
+            return "reader_related_post_from_other_site_clicked"
+        case .readerRelatedPostFromSameSiteClicked:
+            return "reader_related_post_from_same_site_clicked"
+
         // What's New - Feature announcements
         case .featureAnnouncementShown:
             return "feature_announcement_shown"
         case .featureAnnouncementButtonTapped:
             return "feature_announcement_button_tapped"
+
         // Stories
         case .storyIntroShown:
             return "story_intro_shown"
@@ -255,6 +324,10 @@ import Foundation
             return "story_intro_dismissed"
         case .storyIntroCreateStoryButtonTapped:
             return "story_intro_create_story_button_tapped"
+        case .storyAddedMedia:
+            return "story_added_media"
+        case .storyBlockAddMediaTapped:
+            return "story_block_add_media_tapped"
 
         // Jetpack
         case .jetpackSettingsViewed:
@@ -265,10 +338,10 @@ import Foundation
             return "jetpack_disconnect_tapped"
         case .jetpackDisconnectRequested:
             return "jetpack_disconnect_requested"
-        case .jetpackWhitelistedIpsViewed:
-            return "jetpack_whitelisted_ips_viewed"
-        case .jetpackWhitelistedIpsChanged:
-            return "jetpack_whitelisted_ips_changed"
+        case .jetpackAllowlistedIpsViewed:
+            return "jetpack_allowlisted_ips_viewed"
+        case .jetpackAllowlistedIpsChanged:
+            return "jetpack_allowlisted_ips_changed"
         case .activitylogFilterbarSelectType:
             return "activitylog_filterbar_select_type"
         case .activitylogFilterbarResetType:
@@ -281,6 +354,60 @@ import Foundation
             return "activitylog_filterbar_select_range"
         case .activitylogFilterbarResetRange:
             return "activitylog_filterbar_reset_range"
+        case .backupListOpened:
+            return "jetpack_backup_list_opened"
+        case .backupFilterbarRangeButtonTapped:
+            return "jetpack_backup_filterbar_range_button_tapped"
+        case .backupFilterbarSelectRange:
+            return "jetpack_backup_filterbar_select_range"
+        case .backupFilterbarResetRange:
+            return "jetpack_backup_filterbar_reset_range"
+        case .restoreOpened:
+            return "jetpack_restore_opened"
+        case .restoreConfirmed:
+            return "jetpack_restore_confirmed"
+        case .restoreError:
+            return "jetpack_restore_error"
+        case .restoreNotifiyMeButtonTapped:
+            return "jetpack_restore_notify_me_button_tapped"
+        case .backupDownloadOpened:
+            return "jetpack_backup_download_opened"
+        case .backupDownloadConfirmed:
+            return "jetpack_backup_download_confirmed"
+        case .backupFileDownloadError:
+            return "jetpack_backup_file_download_error"
+        case .backupNotifiyMeButtonTapped:
+            return "jetpack_backup_notify_me_button_tapped"
+        case .backupFileDownloadTapped:
+            return "jetpack_backup_file_download_tapped"
+        case .backupDownloadShareLinkTapped:
+            return "jetpack_backup_download_share_link_tapped"
+
+        // Jetpack Scan
+        case .jetpackScanAccessed:
+            return "jetpack_scan_accessed"
+        case .jetpackScanHistoryAccessed:
+            return "jetpack_scan_history_accessed"
+        case .jetpackScanHistoryFilter:
+            return "jetpack_scan_history_filter"
+        case .jetpackScanThreatListItemTapped:
+            return "jetpack_scan_threat_list_item_tapped"
+        case .jetpackScanRunTapped:
+            return "jetpack_scan_run_tapped"
+        case .jetpackScanIgnoreThreatDialogOpen:
+            return "jetpack_scan_ignorethreat_dialogopen"
+        case .jetpackScanThreatIgnoreTapped:
+            return "jetpack_scan_threat_ignore_tapped"
+        case .jetpackScanFixThreatDialogOpen:
+            return "jetpack_scan_fixthreat_dialogopen"
+        case .jetpackScanThreatFixTapped:
+            return "jetpack_scan_threat_fix_tapped"
+        case .jetpackScanAllThreatsOpen:
+            return "jetpack_scan_allthreats_open"
+        case .jetpackScanAllthreatsFixTapped:
+            return "jetpack_scan_allthreats_fix_tapped"
+        case .jetpackScanError:
+            return "jetpack_scan_error"
 
         // Comments
         case .commentViewed:
@@ -303,7 +430,30 @@ import Foundation
             return "comment_edited"
         case .commentRepliedTo:
             return "comment_replied_to"
+        case .commentFilterChanged:
+            return "comment_filter_changed"
 
+        // Invite Links
+        case .inviteLinksGetStatus:
+            return "invite_links_get_status"
+        case .inviteLinksGenerate:
+            return "invite_links_generate"
+        case .inviteLinksShare:
+            return "invite_links_share"
+        case .inviteLinksDisable:
+            return "invite_links_disable"
+
+        // Page Layout and Site Design Picker
+        case .categoryFilterSelected:
+            return "category_filter_selected"
+        case .categoryFilterDeselected:
+            return "category_filter_deselected"
+
+        // User Profile Sheet
+        case .userProfileSheetShown:
+            return "user_profile_sheet_shown"
+        case .userProfileSheetSiteShown:
+            return "user_profile_sheet_site_shown"
         }
     }
 

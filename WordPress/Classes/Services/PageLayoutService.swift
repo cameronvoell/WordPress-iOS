@@ -7,7 +7,10 @@ class PageLayoutService {
     private struct Parameters {
         static let supportedBlocks = "supported_blocks"
         static let previewWidth = "preview_width"
+        static let previewHeight = "preview_height"
         static let scale = "scale"
+        static let type = "type"
+        static let isBeta = "is_beta"
     }
 
     typealias CompletionHandler = (Swift.Result<Void, Error>) -> Void
@@ -30,6 +33,7 @@ class PageLayoutService {
 
     private static func fetchLayouts(_ api: WordPressComRestApi, _ dotComID: Int?, _ blogPersistentID: NSManagedObjectID, _ thumbnailSize: CGSize, _ completion: CompletionHandler?) {
         let params = parameters(thumbnailSize)
+
         PageLayoutServiceRemote.fetchLayouts(api, forBlogID: dotComID, withParameters: params) { (result) in
             switch result {
             case .success(let remoteLayouts):
@@ -51,8 +55,11 @@ class PageLayoutService {
     private static func parameters(_ thumbnailSize: CGSize) -> [String: AnyObject] {
         return [
             Parameters.supportedBlocks: supportedBlocks as AnyObject,
-            Parameters.previewWidth: previewWidth(thumbnailSize) as AnyObject,
-            Parameters.scale: scale as AnyObject
+            Parameters.previewWidth: "\(thumbnailSize.width)" as AnyObject,
+            Parameters.previewHeight: "\(thumbnailSize.height)" as AnyObject,
+            Parameters.scale: scale as AnyObject,
+            Parameters.type: type as AnyObject,
+            Parameters.isBeta: isBeta as AnyObject
         ]
     }
 
@@ -61,11 +68,13 @@ class PageLayoutService {
         return Gutenberg.supportedBlocks(isDev: isDevMode).joined(separator: ",")
     }()
 
-    private static func previewWidth(_ thumbnailSize: CGSize) -> String {
-        return "\(thumbnailSize.width)"
-    }
-
     private static let scale = UIScreen.main.nativeScale
+
+    private static let type = "mobile"
+
+    // Return "true" or "false" for isBeta that gets passed into the endpoint.
+    private static let isBeta = String(BuildConfiguration.current ~= [.localDeveloper, .a8cBranchTest])
+
 }
 
 extension PageLayoutService {
@@ -73,7 +82,7 @@ extension PageLayoutService {
     static func resultsController(forBlog blog: Blog, delegate: NSFetchedResultsControllerDelegate? = nil) -> NSFetchedResultsController<PageTemplateCategory> {
         let context = ContextManager.shared.mainContext
         let request: NSFetchRequest<PageTemplateCategory> = PageTemplateCategory.fetchRequest(forBlog: blog)
-        let sort = NSSortDescriptor(key: "title", ascending: true)
+        let sort = NSSortDescriptor(key: #keyPath(PageTemplateCategory.ordinal), ascending: true)
         request.sortDescriptors = [sort]
 
         let resultsController = NSFetchedResultsController<PageTemplateCategory>(fetchRequest: request, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
@@ -115,8 +124,8 @@ extension PageLayoutService {
     }
 
     private static func persistCategoriesToCoreData(_ blog: Blog, _ categories: [RemoteLayoutCategory], context: NSManagedObjectContext) throws {
-        for category in categories {
-            let category = PageTemplateCategory(context: context, category: category)
+        for (index, category) in categories.enumerated() {
+            let category = PageTemplateCategory(context: context, category: category, ordinal: index)
             blog.pageTemplateCategories?.insert(category)
         }
     }

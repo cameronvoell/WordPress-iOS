@@ -22,21 +22,12 @@ NSString *const WordPressMinimumVersion = @"4.0";
 NSString *const HttpsPrefix = @"https://";
 NSString *const WPBlogUpdatedNotification = @"WPBlogUpdatedNotification";
 
-CGFloat const OneHourInSeconds = 60.0 * 60.0;
-
-
 @implementation BlogService
 
 + (instancetype)serviceWithMainContext
 {
     NSManagedObjectContext *context = [[ContextManager sharedInstance] mainContext];
     return [[BlogService alloc] initWithManagedObjectContext:context];
-}
-
-- (Blog *)blogByBlogId:(NSNumber *)blogID
-{
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"blogID == %@", blogID];
-    return [self blogWithPredicate:predicate];
 }
 
 - (Blog *)blogByBlogId:(NSNumber *)blogID andUsername:(NSString *)username
@@ -133,27 +124,32 @@ CGFloat const OneHourInSeconds = 60.0 * 60.0;
     DDLogMethod();
 
     id<AccountServiceRemote> remote = [self remoteForAccount:account];
-    [remote getBlogsWithSuccess:^(NSArray *blogs) {
-        [self.managedObjectContext performBlock:^{
-            
-            // Let's check if the account object is not nil. Otherwise we'll get an exception below.
-            NSManagedObjectID *accountObjectID = account.objectID;
-            if (!accountObjectID) {
-                DDLogError(@"Error: The Account objectID could not be loaded");
-                return;
-            }
-            
-            // Reload the Account in the current Context
-            NSError *error = nil;
-            WPAccount *accountInContext = (WPAccount *)[self.managedObjectContext existingObjectWithID:accountObjectID
-                                                                                                 error:&error];
-            if (!accountInContext) {
-                DDLogError(@"Error loading WordPress Account: %@", error);
-                return;
-            }
-            
-            [self mergeBlogs:blogs withAccount:accountInContext completion:success];
+    
+    BOOL filterJetpackSites = [AppConfiguration isJetpack];
 
+    [remote getBlogs:filterJetpackSites success:^(NSArray *blogs) {
+        [[[JetpackCapabilitiesService alloc] init] syncWithBlogs:blogs success:^(NSArray<RemoteBlog *> *blogs) {
+            [self.managedObjectContext performBlock:^{
+
+                // Let's check if the account object is not nil. Otherwise we'll get an exception below.
+                NSManagedObjectID *accountObjectID = account.objectID;
+                if (!accountObjectID) {
+                    DDLogError(@"Error: The Account objectID could not be loaded");
+                    return;
+                }
+
+                // Reload the Account in the current Context
+                NSError *error = nil;
+                WPAccount *accountInContext = (WPAccount *)[self.managedObjectContext existingObjectWithID:accountObjectID
+                                                                                                     error:&error];
+                if (!accountInContext) {
+                    DDLogError(@"Error loading WordPress Account: %@", error);
+                    return;
+                }
+
+                [self mergeBlogs:blogs withAccount:accountInContext completion:success];
+
+            }];
         }];
     } failure:^(NSError *error) {
         DDLogError(@"Error syncing blogs: %@", error);
@@ -623,7 +619,10 @@ CGFloat const OneHourInSeconds = 60.0 * 60.0;
                                      failure:(void (^)(NSError *error))failure
 {
     AccountServiceRemoteREST *remote = [[AccountServiceRemoteREST alloc] initWithWordPressComRestApi:account.wordPressComRestApi];
-    [remote getBlogsWithSuccess:^(NSArray *remoteBlogs) {
+    
+    BOOL filterJetpackSites = [AppConfiguration isJetpack];
+    
+    [remote getBlogs:filterJetpackSites success:^(NSArray *remoteBlogs) {
 
         NSMutableSet *accountBlogIDs = [NSMutableSet new];
         for (RemoteBlog *remoteBlog in remoteBlogs) {
@@ -907,7 +906,7 @@ CGFloat const OneHourInSeconds = 60.0 * 60.0;
             return;
         }
         
-        [self blogAuthorsFor:blog with:users];
+        [self updateBlogAuthorsFor:blog with:users];
         
         blog.isMultiAuthor = users.count > 1;
         /// Search for a matching user ID
@@ -941,19 +940,21 @@ CGFloat const OneHourInSeconds = 60.0 * 60.0;
                                        completionHandler:(void (^)(void))completion
 {
     return ^void(RemoteBlog *remoteBlog) {
-        [self.managedObjectContext performBlock:^{
-            NSError *error = nil;
-            Blog *blog = (Blog *)[self.managedObjectContext existingObjectWithID:blogObjectID
-                                                                           error:&error];
-            if (blog) {
-                [self updateBlog:blog withRemoteBlog:remoteBlog];
+        [[[JetpackCapabilitiesService alloc] init] syncWithBlogs:@[remoteBlog] success:^(NSArray<RemoteBlog *> *blogs) {
+            [self.managedObjectContext performBlock:^{
+                NSError *error = nil;
+                Blog *blog = (Blog *)[self.managedObjectContext existingObjectWithID:blogObjectID
+                                                                               error:&error];
+                if (blog) {
+                    [self updateBlog:blog withRemoteBlog:blogs.firstObject];
 
-                [[ContextManager sharedInstance] saveContext:self.managedObjectContext];
-            }
+                    [[ContextManager sharedInstance] saveContext:self.managedObjectContext];
+                }
 
-            if (completion) {
-                completion();
-            }
+                if (completion) {
+                    completion();
+                }
+            }];
         }];
     };
 }
@@ -1020,40 +1021,13 @@ CGFloat const OneHourInSeconds = 60.0 * 60.0;
     };
 }
 
-- (NSTimeZone *)timeZoneForBlog:(Blog *)blog
-{
-    NSString *timeZoneName = [blog getOptionValue:@"timezone"];
-    NSNumber *gmtOffSet = [blog getOptionValue:@"gmt_offset"];
-    id optionValue = [blog getOptionValue:@"time_zone"];
-    
-    NSTimeZone *timeZone = nil;
-    if (timeZoneName.length > 0) {
-        timeZone = [NSTimeZone timeZoneWithName:timeZoneName];
-    }
-    
-    if (!timeZone && gmtOffSet != nil) {
-        timeZone = [NSTimeZone timeZoneForSecondsFromGMT:(gmtOffSet.floatValue * OneHourInSeconds)];
-    }
-    
-    if (!timeZone && optionValue != nil) {
-        NSInteger timeZoneOffsetSeconds = [optionValue floatValue] * OneHourInSeconds;
-        timeZone = [NSTimeZone timeZoneForSecondsFromGMT:timeZoneOffsetSeconds];
-    }
-    
-    if (!timeZone) {
-        timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
-    }
-    
-    return timeZone;
-}
-
 - (void)updateSettings:(BlogSettings *)settings withRemoteSettings:(RemoteBlogSettings *)remoteSettings
 {
     NSParameterAssert(settings);
     NSParameterAssert(remoteSettings);
     
     // Transformables
-    NSSet *separatedBlacklistKeys = [remoteSettings.commentsBlacklistKeys uniqueStringComponentsSeparatedByNewline];
+    NSSet *separatedBlocklistKeys = [remoteSettings.commentsBlocklistKeys uniqueStringComponentsSeparatedByNewline];
     NSSet *separatedModerationKeys = [remoteSettings.commentsModerationKeys uniqueStringComponentsSeparatedByNewline];
     
     // General
@@ -1075,10 +1049,10 @@ CGFloat const OneHourInSeconds = 60.0 * 60.0;
 
     // Discussion
     settings.commentsAllowed = [remoteSettings.commentsAllowed boolValue];
-    settings.commentsBlacklistKeys = separatedBlacklistKeys;
+    settings.commentsBlocklistKeys = separatedBlocklistKeys;
     settings.commentsCloseAutomatically = [remoteSettings.commentsCloseAutomatically boolValue];
     settings.commentsCloseAutomaticallyAfterDays = remoteSettings.commentsCloseAutomaticallyAfterDays;
-    settings.commentsFromKnownUsersWhitelisted = [remoteSettings.commentsFromKnownUsersWhitelisted boolValue];
+    settings.commentsFromKnownUsersAllowlisted = [remoteSettings.commentsFromKnownUsersAllowlisted boolValue];
     
     settings.commentsMaximumLinks = remoteSettings.commentsMaximumLinks;
     settings.commentsModerationKeys = separatedModerationKeys;
@@ -1123,7 +1097,7 @@ CGFloat const OneHourInSeconds = 60.0 * 60.0;
     RemoteBlogSettings *remoteSettings = [RemoteBlogSettings new];
 
     // Transformables
-    NSString *joinedBlacklistKeys = [[settings.commentsBlacklistKeys allObjects] componentsJoinedByString:@"\n"];
+    NSString *joinedBlocklistKeys = [[settings.commentsBlocklistKeys allObjects] componentsJoinedByString:@"\n"];
     NSString *joinedModerationKeys = [[settings.commentsModerationKeys allObjects] componentsJoinedByString:@"\n"];
     
     // General
@@ -1145,10 +1119,10 @@ CGFloat const OneHourInSeconds = 60.0 * 60.0;
 
     // Discussion
     remoteSettings.commentsAllowed = @(settings.commentsAllowed);
-    remoteSettings.commentsBlacklistKeys = joinedBlacklistKeys;
+    remoteSettings.commentsBlocklistKeys = joinedBlocklistKeys;
     remoteSettings.commentsCloseAutomatically = @(settings.commentsCloseAutomatically);
     remoteSettings.commentsCloseAutomaticallyAfterDays = settings.commentsCloseAutomaticallyAfterDays;
-    remoteSettings.commentsFromKnownUsersWhitelisted = @(settings.commentsFromKnownUsersWhitelisted);
+    remoteSettings.commentsFromKnownUsersAllowlisted = @(settings.commentsFromKnownUsersAllowlisted);
     
     remoteSettings.commentsMaximumLinks = settings.commentsMaximumLinks;
     remoteSettings.commentsModerationKeys = joinedModerationKeys;

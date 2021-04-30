@@ -9,7 +9,7 @@ public protocol ApplicationShortcutsProvider {
 
 extension UIApplication: ApplicationShortcutsProvider {
     @objc public var is3DTouchAvailable: Bool {
-        return keyWindow?.traitCollection.forceTouchCapability == .available
+        return mainWindow?.traitCollection.forceTouchCapability == .available
     }
 }
 
@@ -110,6 +110,7 @@ open class WP3DTouchShortcutCreator: NSObject {
     }
 
     @objc fileprivate func createLoggedInShortcuts() {
+
         DispatchQueue.main.async {[weak self]() in
             guard let strongSelf = self else {
                 return
@@ -125,8 +126,10 @@ open class WP3DTouchShortcutCreator: NSObject {
                 visibleShortcutArray.append(entireShortcutArray[LoggedIn3DTouchShortcutIndex.stats.rawValue])
             }
 
-            visibleShortcutArray.append(entireShortcutArray[LoggedIn3DTouchShortcutIndex.newPhotoPost.rawValue])
-            visibleShortcutArray.append(entireShortcutArray[LoggedIn3DTouchShortcutIndex.newPost.rawValue])
+            if AppConfiguration.allowsNewPostShortcut {
+                visibleShortcutArray.append(entireShortcutArray[LoggedIn3DTouchShortcutIndex.newPhotoPost.rawValue])
+                visibleShortcutArray.append(entireShortcutArray[LoggedIn3DTouchShortcutIndex.newPost.rawValue])
+            }
 
             strongSelf.shortcutsProvider.shortcutItems = visibleShortcutArray
         }
@@ -141,7 +144,7 @@ open class WP3DTouchShortcutCreator: NSObject {
     }
 
     fileprivate func is3DTouchAvailable() -> Bool {
-        let window = UIApplication.shared.keyWindow
+        let window = UIApplication.shared.mainWindow
 
         return window?.traitCollection.forceTouchCapability == .available
     }

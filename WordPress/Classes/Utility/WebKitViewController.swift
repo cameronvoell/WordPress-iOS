@@ -79,7 +79,6 @@ class WebKitViewController: UIViewController, WebKitAuthenticatable {
     @objc let navigationDelegate: WebNavigationDelegate?
     @objc var secureInteraction = false
     @objc var addsWPComReferrer = false
-    @objc var addsHideMasterbarParameters = true
     @objc var customTitle: String?
     private let opensNewInSafari: Bool
     let linkBehavior: LinkBehavior
@@ -88,6 +87,19 @@ class WebKitViewController: UIViewController, WebKitAuthenticatable {
     private var tapLocation = CGPoint(x: 0.0, y: 0.0)
     private var widthConstraint: NSLayoutConstraint?
     private var onClose: (() -> Void)?
+
+    private var useLightStyle: Bool {
+        navigationController is LightNavigationController || FeatureFlag.newNavBarAppearance.enabled
+    }
+
+    private var barButtonTintColor: UIColor {
+        useLightStyle ? .listIcon : UIColor(light: .white, dark: .neutral(.shade70))
+    }
+
+    private var navBarTitleColor: UIColor {
+        useLightStyle ? .text : UIColor(light: .white, dark: .neutral(.shade70))
+    }
+
 
     private struct WebViewErrors {
         static let frameLoadInterrupted = 102
@@ -103,7 +115,6 @@ class WebKitViewController: UIViewController, WebKitAuthenticatable {
         customOptionsButton = configuration.optionsButton
         secureInteraction = configuration.secureInteraction
         addsWPComReferrer = configuration.addsWPComReferrer
-        addsHideMasterbarParameters = configuration.addsHideMasterbarParameters
         customTitle = configuration.customTitle
         authenticator = configuration.authenticator
         navigationDelegate = configuration.navigationDelegate
@@ -121,7 +132,6 @@ class WebKitViewController: UIViewController, WebKitAuthenticatable {
         customOptionsButton = parent.customOptionsButton
         secureInteraction = parent.secureInteraction
         addsWPComReferrer = parent.addsWPComReferrer
-        addsHideMasterbarParameters = parent.addsHideMasterbarParameters
         customTitle = parent.customTitle
         authenticator = parent.authenticator
         navigationDelegate = parent.navigationDelegate
@@ -215,12 +225,6 @@ class WebKitViewController: UIViewController, WebKitAuthenticatable {
             request.setValue(WPComReferrerURL, forHTTPHeaderField: "Referer")
         }
 
-        if addsHideMasterbarParameters,
-            let host = request.url?.host,
-            (host.contains(WPComDomain) || host.contains(AutomatticDomain)) {
-            request.url = request.url?.appendingHideMasterbarParameters()
-        }
-
         webView.load(request)
     }
 
@@ -256,12 +260,9 @@ class WebKitViewController: UIViewController, WebKitAuthenticatable {
 
     private func setupNavBarTitleView() {
         titleView.titleLabel.text = NSLocalizedString("Loading...", comment: "Loading. Verb")
-        if #available(iOS 13.0, *), navigationController is LightNavigationController == false {
-            titleView.titleLabel.textColor = UIColor(light: .white, dark: .neutral(.shade70))
-        } else {
-            titleView.titleLabel.textColor = .neutral(.shade70)
-        }
-        titleView.subtitleLabel.textColor = .neutral(.shade30)
+
+        titleView.titleLabel.textColor = navBarTitleColor
+        titleView.subtitleLabel.textColor = useLightStyle ? .neutral(.shade30) : .neutral(.shade5)
 
         if let title = customTitle {
             self.title = title
@@ -275,7 +276,14 @@ class WebKitViewController: UIViewController, WebKitAuthenticatable {
             return
         }
         navigationBar.barStyle = .default
-        navigationBar.titleTextAttributes = [.foregroundColor: UIColor.neutral(.shade70)]
+
+        if !useLightStyle {
+            navigationBar.titleTextAttributes = [.foregroundColor: UIColor.neutral(.shade70)]
+        } else {
+            // Remove serif title bar formatting
+            navigationBar.standardAppearance.titleTextAttributes = [:]
+        }
+
         navigationBar.shadowImage = UIImage(color: WPStyleGuide.webViewModalNavigationBarShadow())
         navigationBar.setBackgroundImage(UIImage(color: WPStyleGuide.webViewModalNavigationBarBackground()), for: .default)
 
@@ -283,6 +291,10 @@ class WebKitViewController: UIViewController, WebKitAuthenticatable {
     }
 
     private func styleNavBarButtons() {
+        guard !useLightStyle else {
+            return
+        }
+
         navigationItem.leftBarButtonItems?.forEach(styleBarButton)
         navigationItem.rightBarButtonItems?.forEach(styleBarButton)
     }
@@ -333,7 +345,7 @@ class WebKitViewController: UIViewController, WebKitAuthenticatable {
     /// - Parameter width: The width value to set the webView to
     func setWidth(_ width: CGFloat?) {
         if let width = width {
-            widthConstraint?.constant = width
+            widthConstraint?.constant = min(width, view.superview?.frame.width ?? width)
             widthConstraint?.priority = UILayoutPriority.defaultHigh
         } else {
             widthConstraint?.priority = UILayoutPriority.defaultLow
@@ -349,11 +361,7 @@ class WebKitViewController: UIViewController, WebKitAuthenticatable {
     }
 
     private func styleBarButton(_ button: UIBarButtonItem) {
-        if #available(iOS 13.0, *), navigationController is LightNavigationController == false {
-            button.tintColor = UIColor(light: .white, dark: .neutral(.shade70))
-        } else {
-            button.tintColor = .listIcon
-        }
+        button.tintColor = barButtonTintColor
     }
 
     private func styleToolBarButton(_ button: UIBarButtonItem) {

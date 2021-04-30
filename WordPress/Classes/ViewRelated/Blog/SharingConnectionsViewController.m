@@ -164,7 +164,7 @@ static NSString *const CellIdentifier = @"CellIdentifier";
     cell.textLabel.textAlignment = NSTextAlignmentCenter;
     cell.textLabel.text = [self titleForConnectionCell];
     if (self.connecting) {
-        UIActivityIndicatorView *activityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        UIActivityIndicatorView *activityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleMedium];
         cell.accessoryView = activityView;
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         [activityView startAnimating];
@@ -257,6 +257,8 @@ static NSString *const CellIdentifier = @"CellIdentifier";
 
 - (void)sharingAuthorizationHelper:(SharingAuthorizationHelper *)helper didConnectToService:(PublicizeService *)service withPublicizeConnection:(PublicizeConnection *)keyringConnection
 {
+    [[QuickStartTourGuide shared] completeSharingTourForBlog:self.blog];
+
     self.connecting = NO;
     [self.tableView reloadData];
     [self showDetailForConnection:keyringConnection];

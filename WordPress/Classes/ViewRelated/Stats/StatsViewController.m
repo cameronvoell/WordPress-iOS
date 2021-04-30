@@ -38,13 +38,13 @@ static NSString *const StatsBlogObjectURLRestorationKey = @"StatsBlogObjectURL";
 {
     [super viewDidLoad];
 
-    self.view.backgroundColor = [UIColor groupTableViewBackgroundColor];
+    self.view.backgroundColor = [UIColor systemGroupedBackgroundColor];
     self.navigationItem.title = NSLocalizedString(@"Stats", @"Stats window title");
     
     UINavigationController *statsNavVC = [[UIStoryboard storyboardWithName:@"SiteStatsDashboard" bundle:nil] instantiateInitialViewController];
     self.siteStatsDashboardVC = statsNavVC.viewControllers.firstObject;
 
-    self.loadingIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    self.loadingIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleMedium];
     self.loadingIndicator.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:self.loadingIndicator];
     [NSLayoutConstraint activateConstraints:@[
@@ -73,9 +73,13 @@ static NSString *const StatsBlogObjectURLRestorationKey = @"StatsBlogObjectURL";
 
 - (void)addStatsViewControllerToView
 {
-    if (self.presentingViewController == nil) {
-        UIBarButtonItem *settingsButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Widgets", @"Nav bar button title to set the site used for Stats widgets.") style:UIBarButtonItemStylePlain target:self action:@selector(makeSiteTodayWidgetSite:)];
-        self.navigationItem.rightBarButtonItem = settingsButton;
+    if (@available (iOS 14, *)) {
+        // do not install the widgets button on iOS 14 or later, if today widget feature flag is enabled
+        if (![Feature enabled:FeatureFlagTodayWidget]) {
+            [self installWidgetsButton];
+        }
+    } else if (self.presentingViewController == nil) {
+        [self installWidgetsButton];
     }
 
     [self addChildViewController:self.siteStatsDashboardVC];
@@ -83,23 +87,25 @@ static NSString *const StatsBlogObjectURLRestorationKey = @"StatsBlogObjectURL";
     [self.siteStatsDashboardVC didMoveToParentViewController:self];
 }
 
+- (void) installWidgetsButton
+{
+    UIBarButtonItem *settingsButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Widgets", @"Nav bar button title to set the site used for Stats widgets.") style:UIBarButtonItemStylePlain target:self action:@selector(makeSiteTodayWidgetSite:)];
+    self.navigationItem.rightBarButtonItem = settingsButton;
+}
 
 - (void)initStats
 {
-    NSManagedObjectContext *context = [[ContextManager sharedInstance] mainContext];
-    BlogService *blogService = [[BlogService alloc] initWithManagedObjectContext:context];
-    SiteStatsInformation.sharedInstance.siteTimeZone = [blogService timeZoneForBlog:self.blog];
-    
+    SiteStatsInformation.sharedInstance.siteTimeZone = [self.blog timeZone];
+
     // WordPress.com + Jetpack REST
     if (self.blog.account) {
         SiteStatsInformation.sharedInstance.oauth2Token = self.blog.account.authToken;
         SiteStatsInformation.sharedInstance.siteID = self.blog.dotComID;
         
         [self addStatsViewControllerToView];
-        
+        [self initializeStatsWidgetsIfNeeded];
         return;
     }
-
     [self refreshStatus];
 }
 

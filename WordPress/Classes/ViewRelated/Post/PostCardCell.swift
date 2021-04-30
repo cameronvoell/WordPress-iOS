@@ -40,14 +40,18 @@ class PostCardCell: UITableViewCell, ConfigurablePostView {
     private var currentLoadedFeaturedImage: String?
     private weak var interactivePostViewDelegate: InteractivePostViewDelegate?
     private weak var actionSheetDelegate: PostActionSheetDelegate?
-    var isAuthorHidden: Bool = false {
+    var shouldHideAuthor: Bool = false {
         didSet {
-            authorLabel.isHidden = isAuthorHidden
-            separatorLabel.isHidden = isAuthorHidden
+            let emptyAuthor = viewModel?.author.isEmpty ?? true
+
+            authorLabel.isHidden = shouldHideAuthor || emptyAuthor
+            separatorLabel.isHidden = shouldHideAuthor || emptyAuthor
         }
     }
 
     func configure(with post: Post) {
+        assert(post.managedObjectContext != nil)
+
         if post != self.post {
             viewModel = PostCardStatusViewModel(post: post)
         }
@@ -187,7 +191,7 @@ class PostCardCell: UITableViewCell, ConfigurablePostView {
         }
 
         if let url = post.featuredImageURL,
-            let desiredWidth = UIApplication.shared.keyWindow?.frame.size.width {
+            let desiredWidth = UIApplication.shared.mainWindow?.frame.size.width {
             featuredImageStackView.isHidden = false
             topPadding.constant = Constants.margin
             loadFeaturedImageIfNeeded(url, preferredSize: CGSize(width: desiredWidth, height: featuredImage.frame.height))
@@ -204,7 +208,7 @@ class PostCardCell: UITableViewCell, ConfigurablePostView {
 
         let host = MediaHost(with: post) { error in
             // We'll log the error, so we know it's there, but we won't halt execution.
-            CrashLogging.logError(error)
+            WordPressAppDelegate.crashLogging?.logError(error)
         }
 
         if currentLoadedFeaturedImage != url.absoluteString {

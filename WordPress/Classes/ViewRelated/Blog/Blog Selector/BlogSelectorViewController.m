@@ -157,7 +157,7 @@
     self.definesPresentationContext = YES;
 
     self.searchController = [[UISearchController alloc] initWithSearchResultsController:nil];
-    self.searchController.dimsBackgroundDuringPresentation = NO;
+    self.searchController.obscuresBackgroundDuringPresentation = NO;
     self.searchController.hidesNavigationBarDuringPresentation = !_displaysNavigationBarWhenSearching;
     self.searchController.delegate = self;
     self.searchController.searchResultsUpdater = self;
@@ -271,8 +271,7 @@
     
     // Retrieve
     NSManagedObjectContext *context = [[ContextManager sharedInstance] mainContext];
-    BlogService *service = [[BlogService alloc] initWithManagedObjectContext:context];
-    Blog *selectedBlog = [service blogByBlogId:self.selectedObjectDotcomID];
+    Blog *selectedBlog = [Blog lookupWithID:self.selectedObjectDotcomID in:context];
     
     // Cache
     _selectedObjectID = selectedBlog.objectID;

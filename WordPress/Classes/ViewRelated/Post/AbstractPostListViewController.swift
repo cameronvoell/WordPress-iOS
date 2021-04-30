@@ -299,7 +299,7 @@ class AbstractPostListViewController: UIViewController,
         definesPresentationContext = true
 
         searchController = UISearchController(searchResultsController: nil)
-        searchController.dimsBackgroundDuringPresentation = false
+        searchController.obscuresBackgroundDuringPresentation = false
 
         searchController.delegate = self
         searchController.searchResultsUpdater = self
@@ -1000,6 +1000,11 @@ class AbstractPostListViewController: UIViewController,
 
         if let index = recentlyTrashedPostObjectIDs.firstIndex(of: postObjectID) {
             recentlyTrashedPostObjectIDs.remove(at: index)
+        }
+
+        if filterSettings.currentPostListFilter().filterType != .draft {
+            // Needed or else the post will remain in the published list.
+            updateAndPerformFetchRequest()
         }
 
         let postService = PostService(managedObjectContext: ContextManager.sharedInstance().mainContext)
